@@ -1,0 +1,93 @@
+{% extends 'dashboard/_index.html' %}
+{% load static %}
+{% load crispy_forms_tags %}
+{% block dashboard_contents %}
+
+<style>
+    .table-title-area .nice-select {
+        max-width: 131px;
+        float: right;
+    }
+</style>
+<div class="tab-pane fade show active" id="v-pills-dashboard" role="tabpanel"
+aria-labelledby="v-pills-dashboard-tab">
+
+
+
+<div class="row pb-4">
+    <div class="col-xl-8 col-lg-12 col-md-6">
+        <div class="form-inner">
+            <h3>Reports</h3>
+        </div>
+    </div>
+    <div class="col-xl-4 col-lg-12 col-md-6">
+        <div class="form-inner">
+            <form action="" method="GET">
+                <select id="querySelect" name="query">
+                    <option value="daily">Daily</option>
+                    <option value="weekly">Last Week</option>
+                    <option value="monthly">Last Month</option>
+                    <option value="yearly">Last Year</option>
+                </select>
+                <button type="submit" class="eg-btn btn--primary btn--md float-end" style="border: none;">Filter</button>
+            </form>
+        </div>
+    </div>
+</div>
+<script>
+    // Get the query parameter from the URL
+    const urlParams = new URLSearchParams(window.location.search);
+    const queryParam = urlParams.get('query');
+
+    // Set the selected option in the dropdown menu
+    const selectElement = document.getElementById('querySelect');
+    if (queryParam) {
+        selectElement.value = queryParam;
+    }
+</script>
+
+<div class="messages">
+    {% for message in messages %}
+    <div class="alert {% if message.tags == 'error' %}alert-danger{% endif %}
+            {% if message.tags == 'success' %}alert-success{% endif %}
+            {% if message.tags == 'info' %}alert-info{% endif %}">
+        {{ message }}
+    </div>
+    {% endfor %}
+</div>
+
+<div class="table-wrapper">
+    <table class="eg-table order-table table mb-0">
+        <thead>
+            <tr>
+                <th>Auction Title</th>
+                <th>Customer</th>
+                <th>Status</th>
+                <th>Price</th>
+            </tr>
+        </thead>
+        <tbody>
+            {% for item in queryset %}
+            <tr>
+                <td data-label="Title">{{ item.auction|truncatechars:50 }}</td>
+                <td data-label="Bidding ID">{{ item.user }}</td>
+                <td data-label="Status" class="text-success">Sold!</td>
+                <td data-label="Bidding ID">$ {{ item.price|floatformat:"2" }}</td>
+            </tr>
+            {% empty %}
+            <tr>
+                <th colspan="4" class="text-center">No Data Found!</th>
+            </tr>
+            {% endfor %}
+        </tbody>
+        <thead>
+            <tr>
+                <th colspan="3" class="text-end">Total Sale</th>
+                <th>$ {{ total_sales }}</th>
+            </tr>
+        </thead>
+    </table>
+</div>
+
+</div>
+{% endblock %}

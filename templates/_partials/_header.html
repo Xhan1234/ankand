@@ -1,0 +1,166 @@
+{% load static %}
+<header class="header-area style-1">
+  <div class="header-logo">
+    <a href="{% url 'home' %}"><img alt="image" src="{% static 'images/bg/header-logo.png' %}" /></a>
+  </div>
+  <div class="main-menu">
+    <div class="mobile-logo-area d-lg-none d-flex justify-content-between align-items-center">
+      <div class="mobile-logo-wrap">
+        <a href="{% url 'home' %}"><img alt="image" src="{% static 'images/bg/header-logo.png' %}" /></a>
+      </div>
+      <div class="menu-close-btn">
+        <i class="bi bi-x-lg"></i>
+      </div>
+    </div>
+    <ul class="menu-list">
+      <li>
+        <a href="{% url 'home' %}">Home</a>
+      </li>
+      <li>
+        <a href="{% url 'about' %}">About Us</a>
+      </li>
+      <li>
+        <a href="{% url 'live-auctions-list' %}">Live Auction</a>
+      </li>
+      <li>
+        <a href="{% url 'auction-closed' %}">Closed Auctions</a>
+      </li>
+      <li class="menu-item-has-children">
+        <a href="#">Category</a><i class="bx bx-plus dropdown-icon"></i>
+        <ul class="submenu">
+          {% for item in categories %}
+          <li>
+            <a href="{% url 'category' item.slug %}">{{ item.title }}</a>
+          </li>
+          {% empty %}
+          <li>
+            <a href="">Category Not Available</a>
+          </li>
+          {% endfor %}
+        </ul>
+      </li>
+      <li>
+        <a href="{% url 'contact' %}">Contact</a>
+      </li>
+    </ul>
+
+    <div class="d-lg-none d-block">
+        <ul class="menu-list">
+          <li class="menu-item-has-children">
+            <a href="#" class="drop-down">My Account</a><i class="bx bx-plus dropdown-icon"></i>
+            <ul class="submenu">
+              {% if user.is_authenticated %}
+                <li>
+                  <a href="{% url 'dashboard' %}">Dashboard</a>
+                </li>
+                <li>
+                  <a href="{% url 'logout' %}">Logout</a>
+                </li>
+              {% else %}
+                <li>
+                  <a href="{% url 'login' %}">Login</a>
+                </li>
+                <li>
+                  <a href="{% url 'register' %}">Sign Up</a>
+                </li>
+              {% endif %}
+            </ul>
+          </li>  
+        </ul>
+
+        <ul class="menu-list">
+          <li class="menu-item-has-children">
+            <a href="#" class="drop-down"><i class="bi bi-bell"></i> Notifications</a><i class="bx bx-plus dropdown-icon"></i>
+            <ul class="submenu">
+              {% for item in notifications %}
+                <li class="list-group-item"><a href="{% url 'notification-details' item.id %}">{{ item.message|truncatechars:25 }}</a></li>
+              {% empty %}
+                <li class="list-group-item text-center">No Notifications Available!</li>
+              {% endfor %}
+            </ul>
+          </li>  
+        </ul>
+
+      <form method="GET" action="{% url 'search' %}" class="mobile-menu-form mb-5">
+        <div class="input-with-btn d-flex flex-column">
+          <input type="text" name="query" placeholder="Search here..." />
+          <button type="submit" class="eg-btn btn--primary btn--sm">Search</button>
+        </div>
+      </form>
+
+      <div class="hotline two">
+        <div class="hotline-info">
+          <span>Click To Call</span>
+          <h6><a href="tel:347-274-8816">+347-274-8816</a></h6>
+        </div>
+      </div>
+    </div>
+  </div>
+  <div class="nav-right d-flex align-items-center">
+    <div class="hotline d-xxl-flex d-none">
+      <div class="hotline-icon">
+        <img alt="image" src="{% static 'images/icons/header-phone.svg' %}" />
+      </div>
+      <div class="hotline-info">
+        <span>Click To Call</span>
+        <h6><a href="tel:347-274-8816">+347-274-8816</a></h6>
+      </div>
+    </div>
+
+    <div class="dropdown" style="margin-right: 15px;">
+      <div class="eg-btn btn--primary header-btn" type="button" id="dropdownMenuButton1" data-bs-toggle="dropdown">
+        <a href="javascript:;"><i class="bi bi-bell"></i>({{ notification_count }})</a>
+      </div>
+      <ul class="dropdown-menu menu-list" aria-labelledby="dropdownMenuButton1">
+        <div class="" style="width: 20rem;">
+          <div class="text-center">
+            <i class="bi bi-bell"></i> Notifictaions
+          </div>
+          {% for item in notifications %}
+            <li class="list-group-item"><a href="{% url 'notification-details' item.id %}">{{ item.message|truncatechars:35 }}</a></li>
+          {% empty %}
+            <li class="list-group-item text-center">No Notifications Available!</li>
+          {% endfor %}
+        </div>
+      </ul>
+    </div>
+
+    <div class="search-btn">
+      <i class="bi bi-search"></i>
+    </div>
+
+    <div class="dropdown">
+      <div class="eg-btn btn--primary header-btn" type="button" id="dropdownMenuButton1" data-bs-toggle="dropdown">
+        <a href="{% url 'dashboard' %}">My Account</a>
+      </div>
+      <ul class="dropdown-menu menu-list" aria-labelledby="dropdownMenuButton1">
+        <div style="width: 12rem;">
+        {% if user.is_authenticated %}
+          <li>
+            <a class="dropdown-item" href="{% url 'dashboard' %}"><i class="bi bi-speedometer"></i>&nbsp;&nbsp;&nbsp;Dashboard</a>
+          </li>
+          <li>
+            <a class="dropdown-item" href="{% url 'profile' request.user %}"><i class="bi bi-person-circle"></i>&nbsp;&nbsp;&nbsp;Profile</a>
+          </li>
+          <li>
+            <a class="dropdown-item" href="{% url 'change-password' %}"><i class="bi bi-key"></i>&nbsp;&nbsp;&nbsp;Change Password</a>
+          </li>
+          <li>
+            <a class="dropdown-item" href="{% url 'logout' %}"><i class="bi bi-box-arrow-left"></i>&nbsp;&nbsp;&nbsp;Logout</a>
+          </li>
+        {% else %}
+          <li>
+            <a class="dropdown-item" href="{% url 'login' %}"><i class="bi bi-person-circle"></i>&nbsp;&nbsp;&nbsp;Login</a>
+          </li>
+          <li>
+            <a class="dropdown-item" href="{% url 'register' %}"><i class="bi bi-box-arrow-in-right"></i>&nbsp;&nbsp;&nbsp;Sign Up</a>
+          </li>
+        {% endif %}
+        </div>
+      </ul>
+    </div>
+    <div class="mobile-menu-btn d-lg-none d-block">
+      <i class="bx bx-menu"></i>
+    </div>
+  </div>
+</header>

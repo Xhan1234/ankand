@@ -1,0 +1,51 @@
+{% extends 'dashboard/_index.html' %}
+{% load static %}
+{% load crispy_forms_tags %}
+{% block dashboard_contents %}
+
+<div class="messages">
+    {% for message in messages %}
+    <div class="alert {% if message.tags == 'error' %}alert-danger{% endif %}
+            {% if message.tags == 'success' %}alert-success{% endif %}
+            {% if message.tags == 'info' %}alert-info{% endif %}">
+        {{ message }}
+    </div>
+    {% endfor %}
+</div>
+
+<div class="tab-pane fade show active" id="v-pills-profile" role="tabpanel" aria-labelledby="v-pills-profile-tab">
+    <div class="dashboard-profile">
+        <div class="owner">
+            <div class="image">
+                <img alt="image" src="{{ user_data.profile_picture_url }}" style="width: 100px; height: 100px;">
+            </div>
+            <div class="content">
+                <h3>{{ user_data }}</h3>
+                <p class="para">{{ user_data.first_name }} {{ user_data.last_name }}</p>
+            </div>
+        </div>
+        
+        <div class="form-wrapper">
+            <hr>
+            <span class='text-danger'>Be Careful! You will received money on this account. So, please add valid account information!</span>
+            <hr>
+            <form method="POST" enctype="multipart/form-data">
+                {% csrf_token %}
+                <div class="row">
+                    <div class="col-xl-12 col-lg-12 col-md-6">
+                        <div class="form-inner">
+                            {{ form|crispy }}
+                        </div>
+                    </div>
+                    <div class="col-12">
+                        <div class="button-group">
+                            <button type="submit" class="eg-btn profile-btn">Confirm Payment Settings</button>
+                            <button class="eg-btn cancel-btn">Cancel</button>
+                        </div>
+                    </div>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
+{% endblock %}

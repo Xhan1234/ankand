@@ -1,0 +1,22 @@
+{% extends "chat/base.html" %}
+
+{% block title %}{{ inbox }}{% endblock %}
+{% block subtitle %}Read all of your inbox messages here{% endblock %}
+
+{% block content%}
+
+<!-- chat/outbox.html -->
+<h1>Outbox</h1>
+<ul>
+    {% for message in sent_messages %}
+        <li>
+            <strong>To: {{ message.recipient }}</strong><br>
+            <strong>Subject: {{ message.subject }}</strong><br>
+            {{ message.message }}<br>
+            Sent on: {{ message.created_at }}
+        </li>
+    {% endfor %}
+</ul>
+
+
+{% endblock %}

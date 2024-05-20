@@ -1,0 +1,68 @@
+{% extends 'dashboard/_index.html' %}
+{% load static %}
+{% load crispy_forms_tags %}
+{% block dashboard_contents %}
+<div class="tab-pane fade show active" id="v-pills-dashboard" role="tabpanel"
+aria-labelledby="v-pills-dashboard-tab">
+
+<div class="table-title-area">
+    <h3>My Bids</h3>
+</div>
+
+<div class="messages">
+    {% for message in messages %}
+    <div class="alert {% if message.tags == 'error' %}alert-danger{% endif %}
+            {% if message.tags == 'success' %}alert-success{% endif %}
+            {% if message.tags == 'info' %}alert-info{% endif %}">
+        {{ message }}
+    </div>
+    {% endfor %}
+</div>
+
+<div class="table-wrapper">
+    <table class="eg-table order-table table mb-0">
+        <thead>
+            <tr>
+                <th>Title</th>
+                <th>Current Bid</th>
+                <th>My Bid</th>
+                <th>Image</th>
+                <th>Status</th>
+                <th>Action</th>
+            </tr>
+        </thead>
+        <tbody>
+            {% for item in page_obj %}
+            <tr>
+                <td data-label="Title"><a href="{% url 'auction-details' item.auction.slug %}">{{ item.auction|truncatechars:50 }}</a></td>
+                <td data-label="Bidding ID">$ {{ item.auction.price|floatformat:"2" }}</td>
+                <td data-label="Bidding ID">$ {{ item.bid_amount|floatformat:"2" }}</td>
+                <td data-label="Image">
+                    <img alt="image" src="{{ item.auction.image.url }}" class="img-fluid">
+                </td>
+                {% if item.auction.price|floatformat:"2" == item.bid_amount|floatformat:"2" %}
+                    <td data-label="Status" class="text-success">You'r highest bider!</td>
+                {% else %}
+                    <td data-label="Status" class="text-danger">You'r not highest bider!</td>
+                {% endif %}
+
+                <td data-label="Action">
+                    <button class="eg-btn action-btn primary" target="_blank" onclick="window.location.href='{% url 'auction-bid-details' item.auction.slug %}';">
+                        <img alt="image" src="{% static 'images/icons/icons8-i-64.png' %}" title="Details" style="height: 14px; width: 14px;">
+                    </button>
+                    {% if item.winningBid == False %}
+                    <button class="eg-btn action-btn red" id="delete" href="{% url 'auction-my-bid-delete' item.id %}">
+                        <img alt="image" src="{% static 'images/icons/icons8-delete-50.png' %}" title="Delete" style="height: 14px; width: 14px;">
+                    </button>
+                    {% endif %}
+                </td>
+            </tr>
+            {% endfor %}
+        </tbody>
+    </table>
+</div>
+
+{% include '_partials/_paginate.html' with alignment='float-end' %}
+
+</div>
+{% endblock %}

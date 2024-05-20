@@ -1,0 +1,123 @@
+{% extends '_base.html' %}
+{% load static %}
+{% block contents %}
+
+<div class="inner-banner">
+    <div class="container">
+        <h2 class="inner-banner-title wow fadeInLeft" data-wow-duration="1.5s" data-wow-delay=".2s">{{ author }}'s Shop
+        </h2>
+        <nav aria-label="breadcrumb">
+            <ol class="breadcrumb">
+                <li class="breadcrumb-item"><a href="index.html">Home</a></li>
+                <li class="breadcrumb-item active" aria-current="page">{{ author }}</li>
+            </ol>
+        </nav>
+    </div>
+</div>
+
+<script>
+    function makeTimer(endTime, counter) {
+
+        var now = new Date();
+        now = (Date.parse(now) / 1000);
+
+        var timeLeft = endTime - now;
+
+        var days = Math.floor(timeLeft / 86400);
+        var hours = Math.floor((timeLeft - (days * 86400)) / 3600);
+        var minutes = Math.floor((timeLeft - (days * 86400) - (hours * 3600 )) / 60);
+        var seconds = Math.floor((timeLeft - (days * 86400) - (hours * 3600) - (minutes * 60)));
+
+        if (hours < "10") { hours = "0" + hours; }
+        if (minutes < "10") { minutes = "0" + minutes; }
+        if (seconds < "10") { seconds = "0" + seconds; }
+
+        $(".days_" + counter).html(days + "<span>D:</span>");
+        $(".hours_" + counter).html(hours + "<span>H:</span>");
+        $(".minutes_" + counter).html(minutes + "<span>M:</span>");
+        $(".seconds_" + counter).html(seconds + "<span>S</span>");
+    }
+
+</script>
+
+
+<div class="live-auction-section pt-120 pb-120">
+    <img alt="image" src="{% static 'images/bg/section-bg.png' %}" class="img-fluid section-bg-top">
+    <img alt="image" src="{% static 'images/bg/section-bg.png' %}" class="img-fluid section-bg-bottom">
+    <div class="container">
+        <div class="row gy-4 mb-60 d-flex justify-content-center">
+
+            {% for auction in page_obj %}
+
+            <script>
+                setInterval(function() { 
+                  var counter = "{{ forloop.counter }}" ;
+                  var endTime=new Date({{ auction.expired_date|date:"U" }} * 1000);
+                  endTime = (Date.parse(endTime) / 1000);
+              
+                  var now = new Date();
+                  now = (Date.parse(now) / 1000);
+          
+                  var closed = "{{ auction.closed }}" ;
+                  if(now >= endTime && closed === "False"){
+                      // If the time has ran out, then refresh the page which will cause auction to close!
+                      window.location.href = window.location.href
+                  }else{
+                      makeTimer(endTime, counter);   
+                  }
+              }, 
+              1000);
+              </script>
+
+            <div class="col-lg-4 col-md-6 col-sm-10 ">
+                <div data-wow-duration="1.5s" data-wow-delay="0.2s" class="eg-card auction-card1 wow fadeInDown">
+                    <div class="auction-img">
+                        <img alt="{{ auction.title }}" src="{{ auction.image.url }}" width="370px;" height="275px;"/>
+                        <div class="auction-timer">
+                            <div class="countdown">
+                                <h4><span class="days_{{ forloop.counter }}"></span><span class="hours_{{ forloop.counter }}"></span><span class="minutes_{{ forloop.counter }}"></span><span class="seconds_{{ forloop.counter }}"></span></h4>
+                              </div>
+                        </div>
+                        <div class="author-area">
+                            <div class="author-emo">
+                                <img alt="image" src="{% static 'images/icons/smile-emo.svg' %}">
+                            </div>
+                            <div class="author-name">
+                                <span>by @{{ auction.author }}</span>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="auction-content">
+                        <h4><a href="{% url 'auction-details' auction.slug %}">{{ auction.title|truncatechars:20 }}</a></h4>
+                        <p>
+                            Bidding Price : <span><span>${{ auction.price }}</span></span>
+                          </p>
+                        <div class="auction-card-bttm">
+                            <a href="{% url 'auction-details' auction.slug %}" class="eg-btn btn--primary btn--sm">Place a Bid</a>
+                            <div class="share-area">
+                                <ul class="social-icons d-flex">
+                                    <li><a href="https://www.facebook.com/"><i class="bx bxl-facebook"></i></a></li>
+                                    <li><a href="https://www.twitter.com/"><i class="bx bxl-twitter"></i></a></li>
+                                    <li><a href="https://www.pinterest.com/"><i class="bx bxl-pinterest"></i></a>
+                                    </li>
+                                    <li><a href="https://www.instagram.com/"><i class="bx bxl-instagram"></i></a>
+                                    </li>
+                                </ul>
+                                <div>
+                                    <a href="#" class="share-btn"><i class="bx bxs-share-alt"></i></a>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            {% endfor %}
+        </div>
+
+
+        {% include '_partials/_paginate.html' with alignment='justify-content-center' %}
+        
+    </div>
+</div>
+
+{% endblock %}

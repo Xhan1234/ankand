@@ -1,0 +1,99 @@
+{% extends "chat/base.html" %}
+
+{% block title %}{{ title }}{% endblock %}
+{% block subtitle %}Read and reply to the message{% endblock %}
+
+{% load widget_tweaks %}
+
+{% block content %}
+
+<div class="col-md-12">
+    {% for message in messages %}
+    <div class="card mb-4 box-shadow">
+        <div class="card-body">
+            <div class="d-flex align-items-center">
+                {% if message.sender.profile_picture %}
+                <img alt="{{ message.sender.username }} avatar" class="rounded-circle" height="32"
+                     src="{{ message.sender.profile_picture.url }}"
+                     width="32">
+                {% else %}
+                <!-- Display a default avatar or handle the absence of a profile picture -->
+                <img alt="Default avatar"
+                     height="32"
+                     src="https://png.pngtree.com/png-clipart/20200224/original/pngtree-cartoon-color-simple-male-avatar-png-image_5230557.jpg"
+                     width="32">
+                {% endif %}
+
+                <div class="ml-2">
+                    <h6 class="card-title">{{ message.sender.username }}</h6>
+                    <p class="card-text">{{ message.message }}</p>
+                </div>
+            </div>
+            <div class="border-top w-100 mt-3"></div>
+
+            <div class="d-flex justify-content-between align-items-center">
+                <small class="text-muted">Sent at {{ message.created_at|date:"F d, Y, P" }}</small>
+            </div>
+        </div>
+    </div>
+
+    {% for reply in message.reply_set.all %}
+    <div class="card mb-4 box-shadow">
+        <div class="card-body inline">
+            <div class="d-flex align-items-center">
+                {% if reply.author.profile_picture %}
+                <img alt="{{ reply.author.username }} avatar" class="rounded-circle" height="32"
+                     src="{{ reply.author.profile_picture.url }}" width="32">
+                {% else %}
+                <img alt="Default avatar" height="32"
+                     src="https://png.pngtree.com/png-clipart/20200224/original/pngtree-cartoon-color-simple-male-avatar-png-image_5230557.jpg"
+                     width="32">
+                {% endif %}
+
+                <div class="ml-2">
+                    <h6 class="card-title">{{ reply.author.username }}</h6>
+                    <p class="card-text">{{ reply.text }}</p>
+                </div>
+            </div>
+
+            <div class="border-top w-100 mt-3"></div>
+
+            <div class="d-flex justify-content-between align-items-center">
+                <small class="text-muted">Replied at {{ reply.created_at|date:"F d, Y, P" }}</small>
+            </div>
+        </div>
+    </div>
+
+    {% endfor %}
+    {% endfor %}
+
+
+    {% if can_reply %}
+
+
+    <form class="post-form" method="POST">
+        {% csrf_token %}
+
+
+        {{ form.text|add_class:"custom-input" }}
+
+
+        <div align="right">
+        <button class="btn btn-primary" type="submit">Reply</button>
+            </div>
+    </form>
+    {% if form.errors %}
+    <div class="alert alert-danger mt-3">
+        <strong>Error:</strong>
+        <ul>
+            {% for error in form.errors %}
+            <li>{{ error }}</li>
+            {% endfor %}
+        </ul>
+    </div>
+    {% endif %}
+
+
+</div>
+{% endif %}
+{% endblock %}

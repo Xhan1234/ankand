@@ -1,0 +1,66 @@
+{% extends '_base.html' %}
+{% load static %}
+{% block contents %}
+
+<div class="inner-banner">
+    <div class="container">
+        <h2 class="inner-banner-title wow fadeInLeft" data-wow-duration="1.5s" data-wow-delay=".2s">Notifications</h2>
+        <nav aria-label="breadcrumb">
+            <ol class="breadcrumb">
+                <li class="breadcrumb-item"><a href="index.html">Home</a></li>
+                <li class="breadcrumb-item active" aria-current="page">Notification Details</li>
+            </ol>
+        </nav>
+    </div>
+</div>
+
+<div class="auction-details-section pt-120 pb-120">
+    <img alt="image" src="{% static 'images/bg/section-bg.png' %}" class="img-fluid section-bg-top">
+    <img alt="image" src="{% static 'images/bg/section-bg.png' %}" class="img-fluid section-bg-bottom">
+    <div class="container">
+
+        <div class="row d-flex justify-content-center g-4">
+            <div class="col-lg-8">
+                <div class="tab-content" id="pills-tabContent">
+                    <div class="tab-pane fade show active wow fadeInUp" data-wow-duration="1.5s"
+                        data-wow-delay=".2s" id="pills-home" role="tabpanel" aria-labelledby="pills-home-tab">
+                        <div class="describe-content">
+                            <h4>{{ notification.auction.title }}</h4>
+                            <p class="para">{{ notification.message }}</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="col-lg-4">
+                <div class="blog-sidebar">
+                    <div class="sidebar-banner wow fadeInUp" data-wow-duration="1.5s" data-wow-delay="1s">
+                        <div class="banner-content">
+                            {% comment %} <span>{{ notification.auction.condition }}</span> {% endcomment %}
+                            <h3>{{ notification.auction.title }}</h3>
+                            <a href="{% url 'auction-details' notification.auction.slug %}" class="eg-btn btn--primary card--btn">Details</a>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+<style>
+    .blog-sidebar .sidebar-banner {
+        background-image: linear-gradient(90deg, rgba(31, 34, 48, 0.75), rgba(31, 34, 48, 0.75)), url("{{ notification.auction.image.url }}");
+        background-size: cover;
+        background-repeat: no-repeat;
+        width: 100%;
+        height: 100%;
+        text-align: center;
+        -o-object-fit: cover;
+        object-fit: cover;
+        padding: 25px;
+        min-height: 415px;
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        border-radius: 5px
+    }
+</style>
+{% endblock %}

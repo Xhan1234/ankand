@@ -1,0 +1,373 @@
+{% extends '_base.html' %} 
+{% load static %} 
+{% load crispy_forms_tags %} 
+{% block contents %}
+<div class="inner-banner">
+  <div class="container">
+    <h2 class="inner-banner-title wow fadeInLeft" data-wow-duration="1.5s" data-wow-delay=".2s">
+      Order Confirmed
+    </h2>
+    <nav aria-label="breadcrumb">
+      <ol class="breadcrumb">
+        <li class="breadcrumb-item"><a href="index.html">Home</a></li>
+        <li class="breadcrumb-item"><a href="index.html">Billing</a></li>
+        <li class="breadcrumb-item active" aria-current="page">
+          Order Confirmed
+        </li>
+      </ol>
+    </nav>
+  </div>
+</div>
+
+<div class="faq-section pt-120 pb-120">
+  <div class="container">
+    <div class="row d-flex justify-content-center gy-5">
+      <div class="col-lg-4 col-md-12 order-lg-1 order-2">
+        <div class="faq-form-area wow fadeInDown" data-wow-duration="1.5s" data-wow-delay=".2s">
+          <h5>ORDER #{{ invoice.invoice_no }}</h5>
+          <p class="para text-center">Hey {{ invoice.user }},<br>
+            We've got your order! Your world is about to look a whole lot better. We'll drop you another email when your order ships.</p>
+          <div class='center'>
+            <a href="{% url 'home' %}" class="eg-btn btn--primary3 btn--md mt-1">Go to Home</a>
+            <a href="{% url 'my-orders' %}" class="eg-btn btn--primary btn--md mt-1 center">Got to Order List</a>
+            <a href="{% url 'export-invoice' invoice.id %}" target="_blank" class="eg-btn btn--primary2 btn--md mt-1">Download Invoice</a>
+          </div>
+        </div>
+      </div>
+      
+      <div class="col-lg-8 col-md-12 text-center order-lg-2 order-1">
+        <h2 class="section-title3">Order Confirmation</h2>
+
+          <!-- Header -->
+          <table width="100%" border="0" cellpadding="0" cellspacing="0" align="center" class="fullTable" bgcolor="#e1e1e1">
+            <tr>
+              <td height="20"></td>
+            </tr>
+            <tr>
+              <td>
+                <table width="600" border="0" cellpadding="0" cellspacing="0" align="center" class="fullTable" bgcolor="#ffffff" style="border-radius: 10px 10px 0 0;">
+                  <tr class="hiddenMobile">
+                    <td height="40"></td>
+                  </tr>
+                  <tr class="visibleMobile">
+                    <td height="30"></td>
+                  </tr>
+
+                  <tr>
+                    <td>
+                      <table width="480" border="0" cellpadding="0" cellspacing="0" align="center" class="fullPadding">
+                        <tbody>
+                          <tr>
+                            <td>
+                              <table width="220" border="0" cellpadding="0" cellspacing="0" align="left" class="col">
+                                <tbody>
+                                  <tr class="hiddenMobile">
+                                    <td height="40"></td>
+                                  </tr>
+                                  <tr class="visibleMobile">
+                                    <td height="20"></td>
+                                  </tr>
+                                  <tr>
+                                    <td style="font-size: 12px; color: #5b5b5b; font-family: 'Open Sans', sans-serif; line-height: 18px; vertical-align: top; text-align: left;">
+                                      Hello, {{ invoice.user }}.
+                                      <br> Thank you for shopping from our store and for your order.
+                                    </td>
+                                  </tr>
+                                </tbody>
+                              </table>
+                              <table width="220" border="0" cellpadding="0" cellspacing="0" align="right" class="col">
+                                <tbody>
+                                  <tr class="visibleMobile">
+                                    <td height="20"></td>
+                                  </tr>
+                                  <tr>
+                                    <td height="5"></td>
+                                  </tr>
+                                  <tr>
+                                    <td style="font-size: 21px; color: #ff0000; letter-spacing: -1px; font-family: 'Open Sans', sans-serif; line-height: 1; vertical-align: top; text-align: right;">
+                                      Invoice
+                                    </td>
+                                  </tr>
+                                  <tr>
+                                    <td style="font-size: 12px; color: #5b5b5b; font-family: 'Open Sans', sans-serif; line-height: 18px; vertical-align: top; text-align: right;">
+                                      <small>{{ invoice.created_at }}</small><br>
+                                      <strong>Payment Status: 
+                                        {% if invoice.order.paid is True %}
+                                        <span style="color: green;">Paid</span>
+                                        {% else %}
+                                          <span style="color: #ff0000;">Unpaid</span>
+                                        {% endif %}
+                                      </strong>
+                                    </td>
+                                  </tr>
+                                </tbody>
+                              </table>
+                            </td>
+                          </tr>
+                        </tbody>
+                      </table>
+                    </td>
+                  </tr>
+                </table>
+              </td>
+            </tr>
+          </table>
+          <!-- /Header -->
+          <!-- Order Details -->
+          <table width="100%" border="0" cellpadding="0" cellspacing="0" align="center" class="fullTable" bgcolor="#e1e1e1">
+            <tbody>
+              <tr>
+                <td>
+                  <table width="600" border="0" cellpadding="0" cellspacing="0" align="center" class="fullTable" bgcolor="#ffffff">
+                    <tbody>
+                      <tr>
+                      <tr class="hiddenMobile">
+                        <td height="60"></td>
+                      </tr>
+                      <tr class="visibleMobile">
+                        <td height="40"></td>
+                      </tr>
+                      <tr>
+                        <td>
+                          <table width="480" border="0" cellpadding="0" cellspacing="0" align="center" class="fullPadding">
+                            <tbody>
+                              <tr>
+                                <th style="font-size: 12px; font-family: 'Open Sans', sans-serif; color: #5b5b5b; font-weight: normal; line-height: 1; vertical-align: top; padding: 0 10px 7px 0;" width="52%" align="left">
+                                  Item
+                                </th>
+                                <th style="font-size: 12px; font-family: 'Open Sans', sans-serif; color: #5b5b5b; font-weight: normal; line-height: 1; vertical-align: top; padding: 0 0 7px;" align="center">
+                                  Quantity
+                                </th>
+                                <th style="font-size: 12px; font-family: 'Open Sans', sans-serif; color: #1e2b33; font-weight: normal; line-height: 1; vertical-align: top; padding: 0 0 7px;" align="right">
+                                  Subtotal
+                                </th>
+                              </tr>
+                              <tr>
+                                <td height="1" style="background: #bebebe;" colspan="4"></td>
+                              </tr>
+                              <tr>
+                                <td height="10" colspan="4"></td>
+                              </tr>
+                              <tr>
+                                <td style="font-size: 12px; font-family: 'Open Sans', sans-serif; color: #ff0000;  line-height: 18px;  vertical-align: top; padding:10px 0;" class="article">
+                                  {{ invoice.order.auction }}
+                                </td>
+                                <td style="font-size: 12px; font-family: 'Open Sans', sans-serif; color: #646a6e;  line-height: 18px;  vertical-align: top; padding:10px 0;" align="center">1</td>
+                                <td style="font-size: 12px; font-family: 'Open Sans', sans-serif; color: #1e2b33;  line-height: 18px;  vertical-align: top; padding:10px 0;" align="right">
+                                  $ {{ price }}</td>
+                              </tr>
+                              <tr>
+                                <td height="1" colspan="4" style="border-bottom:1px solid #e4e4e4"></td>
+                              </tr>
+                              <tr>
+                                <td height="1" colspan="4" style="border-bottom:1px solid #e4e4e4"></td>
+                              </tr>
+                            </tbody>
+                          </table>
+                        </td>
+                      </tr>
+                      <tr>
+                        <td height="20"></td>
+                      </tr>
+                    </tbody>
+                  </table>
+                </td>
+              </tr>
+            </tbody>
+          </table>
+          <!-- /Order Details -->
+          <!-- Total -->
+          <table width="100%" border="0" cellpadding="0" cellspacing="0" align="center" class="fullTable" bgcolor="#e1e1e1">
+            <tbody>
+              <tr>
+                <td>
+                  <table width="600" border="0" cellpadding="0" cellspacing="0" align="center" class="fullTable" bgcolor="#ffffff">
+                    <tbody>
+                      <tr>
+                        <td>
+
+                          <!-- Table Total -->
+                          <table width="480" border="0" cellpadding="0" cellspacing="0" align="center" class="fullPadding">
+                            <tbody>
+                              {% if percentage %}
+                              <tr>
+                                <td style="font-size: 12px; font-family: 'Open Sans', sans-serif; color: #646a6e; line-height: 22px; vertical-align: top; text-align:right; ">
+                                  Service Charge({{ percentage.percentage }}%)
+                                </td>
+                                <td style="font-size: 12px; font-family: 'Open Sans', sans-serif; color: #646a6e; line-height: 22px; vertical-align: top; text-align:right; ">
+                                  $ {{ percentage_price }}
+                                </td>
+                              </tr>
+                              {% endif %}
+                              {% if delivery_fee %}
+                              <tr>
+                                <td style="font-size: 12px; font-family: 'Open Sans', sans-serif; color: #646a6e; line-height: 22px; vertical-align: top; text-align:right; ">
+                                  Shipping &amp; Handling
+                                </td>
+                                <td style="font-size: 12px; font-family: 'Open Sans', sans-serif; color: #646a6e; line-height: 22px; vertical-align: top; text-align:right; ">
+                                  $ {{ delivery_fee.delivery_fee }}
+                                </td>
+                              </tr>
+                              {% endif %}
+                              <tr>
+                                <td style="font-size: 12px; font-family: 'Open Sans', sans-serif; color: #646a6e; line-height: 22px; vertical-align: top; text-align:right; ">
+                                  Subtotal
+                                </td>
+                                <td style="font-size: 12px; font-family: 'Open Sans', sans-serif; color: #646a6e; line-height: 22px; vertical-align: top; text-align:right; white-space:nowrap;" width="80">
+                                  $ {{ invoice.order.paid_amount }}
+                                </td>
+                              </tr>
+                              <tr>
+                                <td style="font-size: 12px; font-family: 'Open Sans', sans-serif; color: #000; line-height: 22px; vertical-align: top; text-align:right; ">
+                                  <strong>Grand Total (Incl.Tax)</strong>
+                                </td>
+                                <td style="font-size: 12px; font-family: 'Open Sans', sans-serif; color: #000; line-height: 22px; vertical-align: top; text-align:right; ">
+                                  <strong>$ {{ total }}</strong>
+                                </td>
+                              </tr>
+                            </tbody>
+                          </table>
+                          <!-- /Table Total -->
+
+                        </td>
+                      </tr>
+                    </tbody>
+                  </table>
+                </td>
+              </tr>
+            </tbody>
+          </table>
+          <!-- /Total -->
+          <!-- Information -->
+          <table width="100%" border="0" cellpadding="0" cellspacing="0" align="center" class="fullTable" bgcolor="#e1e1e1">
+            <tbody>
+              <tr>
+                <td>
+                  <table width="600" border="0" cellpadding="0" cellspacing="0" align="center" class="fullTable" bgcolor="#ffffff">
+                    <tbody>
+                      <tr>
+                      <tr class="hiddenMobile">
+                        <td height="60"></td>
+                      </tr>
+                      <tr class="visibleMobile">
+                        <td height="40"></td>
+                      </tr>
+                      <tr>
+                        <td>
+                          <table width="480" border="0" cellpadding="0" cellspacing="0" align="center" class="fullPadding">
+                            <tbody>
+                              <tr>
+                                <td>
+                                  <table width="220" border="0" cellpadding="0" cellspacing="0" align="left" class="col">
+
+                                    <tbody>
+                                      <tr>
+                                        <td style="font-size: 11px; font-family: 'Open Sans', sans-serif; color: #5b5b5b; line-height: 1; vertical-align: top; ">
+                                          <strong>BILLING INFORMATION</strong>
+                                        </td>
+                                      </tr>
+                                      <tr>
+                                        <td width="100%" height="10"></td>
+                                      </tr>
+                                      <tr>
+                                        <td style="font-size: 12px; font-family: 'Open Sans', sans-serif; color: #5b5b5b; line-height: 20px; vertical-align: top; ">
+                                          {{ invoice.order.billing.first_name }} {{ invoice.order.billing.last_name }},<br>  {{ invoice.order.billing.address }}<br> {{ invoice.order.billing.state }}
+                                          <br> {{ invoice.order.billing.city }}, {{ invoice.order.billing.street }}, {{ invoice.order.billing.house }}, {{ invoice.order.billing.zip_code }}
+                                          <br> T: {{ invoice.order.billing.phone }}
+                                        </td>
+                                      </tr>
+                                    </tbody>
+                                  </table>
+
+
+                                  <table width="220" border="0" cellpadding="0" cellspacing="0" align="right" class="col">
+                                    <tbody>
+                                      <tr class="visibleMobile">
+                                        <td height="20"></td>
+                                      </tr>
+                                      <tr>
+                                        <td style="font-size: 11px; font-family: 'Open Sans', sans-serif; color: #5b5b5b; line-height: 1; vertical-align: top; ">
+                                          <strong>PAYMENT METHOD</strong>
+                                        </td>
+                                      </tr>
+                                      <tr>
+                                        <td width="100%" height="10"></td>
+                                      </tr>
+                                      <tr>
+                                        <td style="font-size: 12px; font-family: 'Open Sans', sans-serif; color: #5b5b5b; line-height: 20px; vertical-align: top; ">
+                                          {{ invoice.order.payment_method }}<br>
+                                          <strong>Payment Status: 
+                                            {% if invoice.order.paid is True %}
+                                            <span style="color: green;">Paid</span>
+                                            {% else %}
+                                              <span style="color: #ff0000;">Unpaid</span>
+                                            {% endif %}
+                                          </strong>
+                                        </td>
+                                      </tr>
+                                    </tbody>
+                                  </table>
+                                </td>
+                              </tr>
+                            </tbody>
+                          </table>
+                        </td>
+                      </tr>
+                      <tr class="hiddenMobile">
+                        <td height="60"></td>
+                      </tr>
+                      <tr class="visibleMobile">
+                        <td height="30"></td>
+                      </tr>
+                    </tbody>
+                  </table>
+                </td>
+              </tr>
+            </tbody>
+          </table>
+          <!-- /Information -->
+          <table width="100%" border="0" cellpadding="0" cellspacing="0" align="center" class="fullTable" bgcolor="#e1e1e1">
+
+            <tr>
+              <td>
+                <table width="600" border="0" cellpadding="0" cellspacing="0" align="center" class="fullTable" bgcolor="#ffffff" style="border-radius: 0 0 10px 10px;">
+                  <tr>
+                    <td>
+                      <table width="480" border="0" cellpadding="0" cellspacing="0" align="center" class="fullPadding">
+                        <tbody>
+                          <tr>
+                            <td style="font-size: 12px; color: #5b5b5b; font-family: 'Open Sans', sans-serif; line-height: 18px; vertical-align: top; text-align: left;">
+                              Have a nice day.
+                            </td>
+                          </tr>
+                        </tbody>
+                      </table>
+                    </td>
+                  </tr>
+                  <tr class="spacer">
+                    <td height="50"></td>
+                  </tr>
+
+                </table>
+              </td>
+            </tr>
+            <tr>
+              <td height="20"></td>
+            </tr>
+          </table>
+          </div>
+        </div>
+
+  </div>
+</div>
+
+
+<script>
+  window.onload = function() {
+      if (window.history.replaceState) {
+          window.history.replaceState(null, null, window.location.href);
+      }
+  }
+</script>
+
+{% endblock %}

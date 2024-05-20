@@ -1,0 +1,114 @@
+{% extends '_base.html' %}
+{% load static %}
+{% block contents %}
+<div class="inner-banner">
+    <div class="container">
+        <h2 class="inner-banner-title  wow fadeInLeft" data-wow-duration="1.5s" data-wow-delay=".4s">Shopping Cart Details
+        </h2>
+        <nav aria-label="breadcrumb">
+            <ol class="breadcrumb">
+                <li class="breadcrumb-item"><a href="index.html">Home</a></li>
+                <li class="breadcrumb-item active">Shopping Cart Details</li>
+            </ol>
+        </nav>
+    </div>
+</div>
+
+  <div class="dashboard-section pt-120 pb-120">
+    <img alt="image" src="{% static 'images/bg/section-bg.png' %}" class="img-fluid section-bg-top" />
+    <img alt="image" src="{% static 'images/bg/section-bg.png' %}" class="img-fluid section-bg-bottom" />
+    <div class="container">
+      <div class="row g-4">
+        <div class="col-lg-8">
+            <div class="blog-widget-item">
+                
+          <h5 class="mb-3"><a class="text-body" href="{% url 'home' %}"><i class="fas fa-long-arrow-alt-left me-2"></i>Continue shopping</a></h5>
+          <hr />
+
+          <div class="d-flex justify-content-between align-items-center mb-3">
+            <div>
+              <eum class="mb-0">You have {{ total_quantity }} items in your cart.</eum>
+                {% if total_quantity == 0 %}
+                  <a href="{% url 'home' %}">Make Purchase</a>
+                {% endif %}
+            </div>
+          </div>
+          <div class="card mb-3 mb-lg-0">
+            <div class="card-body">
+
+            {% for cart in cart_items %}
+                <div class="d-flex justify-content-between">
+                  <div class="d-flex flex-row align-items-center">
+                    <div>
+                      <img alt="Shopping item" class="img-fluid rounded-3" src="{{ cart.auction.image.url }}" style="width: 65px;" />
+                    </div>
+                    <div class="ms-3">
+                      <h5>{{ cart.auction.title }}</h5>
+                      <p class="small mb-0">{{ cart.auction.description|truncatewords:4 }}</p>
+                    </div>
+                  </div>
+                  <div class="d-flex flex-row align-items-center">
+                    <div style="width: 50px;">
+                      <h5 class="fw-normal mb-0">{{ cart.quantity }}</h5>
+                    </div>
+                    <div style="width: 90px;">
+                      <h5 class="mb-0">${{ cart.auction.price }}</h5>
+                    </div>
+                    <form action="{% url 'delete-cart-item' cart.id %}" method="post">
+                      {% csrf_token %}
+                      <button class="btn btn-danger btn-sm btn-link" style="color: #fff;" type="submit"><i class="fas fa-trash-alt"></i></button>
+                    </form>
+                  </div>
+                </div>
+                <hr>
+            {% endfor %}
+        </div>  
+
+          </div>
+        </div>
+        </div>
+        <div class="col-lg-4">
+          <div class="blog-widget-item">
+            <div class="top-blog">
+                <div class="sidebar-widget-title">
+                    <h4>Price Details</h4>
+                    <p>You are logged as - <strong>{{ user.username }}</strong></p>
+                </div>
+                <hr>
+                <div class="blog-widget-body">
+                    <div class="d-flex justify-content-between">
+                        <p class="mb-3">Subtotal</p>
+                        <p class="mb-3">${{ total_cost }}</p>
+                      </div>
+        
+                      <div class="d-flex justify-content-between">
+                        <p style="margin-bottom: 0rem;">Shipping</p>
+                        <p style="margin-bottom: 0rem;">$20.00</p>
+                      </div>
+
+                      <hr>
+
+                      <div class="d-flex justify-content-between">
+                        <p class="mb-3">Total</p>
+                        <p class="mb-3">${{ total_cost_with_shipping }}</p>
+                      </div>
+                      
+                      <hr>
+                      
+                      {% if cart_items %}
+                      <a class="eg-btn btn--primary button btn--md" href="{% url 'checkout' %}">
+                        <div class="d-flex justify-content-between">
+                          <span>Checkout <i class="fas fa-long-arrow-alt-right ms-2"></i></span>
+                        </div>
+                    </a>
+                    {% endif %}
+                </div>
+            </div>
+        </div>
+
+
+        </div>
+      </div>
+    </div>
+  </div>
+{% endblock %}

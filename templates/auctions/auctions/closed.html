@@ -1,0 +1,80 @@
+{% extends '_base.html' %}
+{% load static %}
+{% block contents %}
+<div class="inner-banner">
+    <div class="container">
+        <h2 class="inner-banner-title  wow fadeInLeft" data-wow-duration="1.5s" data-wow-delay=".4s">Auction Closed
+        </h2>
+        <nav aria-label="breadcrumb">
+            <ol class="breadcrumb">
+                <li class="breadcrumb-item"><a href="index.html">Home</a></li>
+                <li class="breadcrumb-item active" aria-current="page">Auction Closed</li>
+            </ol>
+        </nav>
+    </div>
+</div>
+
+<div class="auction-details-section pt-120 pb-120">
+    <img alt="image" src="{% static 'images/bg/section-bg.png' %}" class="img-fluid section-bg-top">
+    <img alt="image" src="{% static 'images/bg/section-bg.png' %}" class="img-fluid section-bg-bottom">
+    <div class="container">
+
+        {% for item in page_obj %}
+        <div class="row g-4">
+            <div class="col-xl-5 col-lg-7 d-flex flex-row align-items-start justify-content-lg-start justify-content-center flex-md-nowrap flex-wrap gap-4">
+  
+                <div class="tab-content mb-4 d-flex justify-content-lg-start justify-content-center  wow fadeInUp"
+                    data-wow-duration="1.5s" data-wow-delay=".4s">
+                    <div class="tab-pane big-image fade show active" id="gallery-img1">
+                        <img alt="image" src="{{ item.image.url }}" class="img-fluid" style="height: 400px; width: 500px;">
+                    </div>
+                </div>
+            </div>
+            <div class="col-xl-6 col-lg-5">
+                <div class="auction-details-right  wow fadeInDown" data-wow-duration="1.5s" data-wow-delay=".2s">
+                    <a href="{% url 'auction-details' item.slug %}"><h3>{{ item.title }}</h3></a>
+                    <h5>Condition: {{ item.condition }}</h5>
+                    <h5>Auction Closed On: <span class="text-danger">{{ item.expired_date }}</span></h5>
+                    <h6>Author: {{ item.author }}</h6>
+                    <h6>
+                    {% if item.winnerBid %}
+                        <h5>Status: <span class="text-success">Sold</span></h5>
+                    {% else %}
+                        <h5>Status: <span class="text-danger">Unsold</span></h5>
+                    {% endif %}
+                    </h6>
+                    {% if item.amount_of_bids > 0 %}
+                        <a href="{% url 'auction-bid-details' item.slug %}">[ <span class="text-primary"> {{ item.amount_of_bids }} bids</span> ]</a>
+                    {% endif %}
+                    <p class="para">{{ item.description|slice:":300" }}</p>
+                    {% if item.winnerBid.type == 'auction' %}
+                        <div class="form-title" style="margin-bottom: 0px;">
+                            {% if item.winnerBid %}
+                                <h5> Winner: {{item.winnerBid.user.username}}</h5>
+                            {% else %}
+                            <h5> Winner: None</h5>
+                            {% endif %}
+
+                            <h6>Bidding Price: <span>${{ item.price }}</span></h6>
+                            <h6>Winning Price: ${{ item.winnerBid }}</h6>
+                        </div>
+                    {% elif item.winnerBid.type == 'buy-it-now' %} 
+                        <div class="form-title" style="margin-bottom: 0px;">
+                            {% if item.winnerBid %}
+                                <h5> Direct Sold: {{item.winnerBid.user.username}}</h5>
+                            {% endif %}
+
+                            <h6>Sold Price: <span>${{ item.direct_buy }}</span></h6>
+                        </div>
+                    {% endif %}
+                </div>
+            </div>
+        </div>
+        <hr>
+        {% endfor %}
+
+    </div>
+    <br><br>
+    {% include '_partials/_paginate.html' with alignment='justify-content-center' %}
+</div>
+{% endblock %}

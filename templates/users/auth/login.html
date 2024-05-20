@@ -1,0 +1,107 @@
+{% extends '_base.html' %}
+{% load static %}
+{% load crispy_forms_tags %}
+{% block contents %}
+<div class="inner-banner">
+    <div class="container">
+        <h2 class="inner-banner-title wow fadeInLeft" data-wow-duration="1.5s" data-wow-delay=".2s">Log In</h2>
+        <nav aria-label="breadcrumb">
+            <ol class="breadcrumb">
+                <li class="breadcrumb-item"><a href="index.html">Home</a></li>
+                <li class="breadcrumb-item active" aria-current="page">Log In</li>
+            </ol>
+        </nav>
+    </div>
+</div>
+
+<div class="signup-section pt-120 pb-120">
+    <img alt="image" src="{% static 'images/bg/section-bg.png' %}" class="section-bg-top">
+    <img alt="image" src="{% static 'images/bg/section-bg.png' %}" class="section-bg-bottom">
+    <div class="container">
+        <div class="row d-flex justify-content-center">
+
+            <div class="col-xl-6 col-lg-8 col-md-10">
+                <div class="form-wrapper wow fadeInUp" data-wow-duration="1.5s" data-wow-delay=".2s">
+                    <div class="form-title">
+                        <h3>Log In</h3>
+                        <p>New Member? <a href="{% url "register" %}">signup here</a></p>
+                    </div>
+                    <form class="w-100" method="POST">
+                        {% csrf_token %}
+                        <div class="row">
+                            <div class="col-12">
+                                <div class="form-inner">
+                                    {{ form|crispy }}
+                                </div>
+                            </div>
+                            <div class="col-12">
+                                <div class="form-agreement form-inner d-flex justify-content-between flex-wrap">
+                                    <div class="form-group">
+                                        <input type="checkbox" id="html">
+                                        <label for="html">I agree to the <a href="#">Terms & Policy</a></label>
+                                    </div>
+                                    <a href="{% url 'password-reset' %}" class="forgot-pass">Forgotten Password</a>
+                                </div>
+                            </div>
+                        </div>
+                        <button type="submit" class="account-btn">Log in</button>
+                    </form>
+                    <br>
+                    <div class="form-poicy-area">
+                        <p>By clicking the "signup" button, you create a Cobiro account, and you agree to Cobiro's
+                            <a href="#">Terms & Conditions</a> & <a href="#">Privacy Policy.</a></p>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+
+<div class="about-us-counter pb-120">
+    <div class="container">
+        <div class="row g-4 d-flex justify-content-center">
+            <div class="col-xl-3 col-lg-4 col-md-6 col-sm-10 col-10">
+                <div class="counter-single text-center d-flex flex-row hover-border1 wow fadeInDown"
+                    data-wow-duration="1.5s" data-wow-delay=".2s">
+                    <div class="counter-icon"> <img alt="image" src="{% static 'images/icons/employee.svg' %}"> </div>
+                    <div class="coundown d-flex flex-column">
+                        <h3 class="odometer" data-odometer-final="5400">&nbsp;</h3>
+                        <p>Happy Customer</p>
+                    </div>
+                </div>
+            </div>
+            <div class="col-xl-3 col-lg-4 col-md-6 col-sm-10 col-10">
+                <div class="counter-single text-center d-flex flex-row hover-border1 wow fadeInDown"
+                    data-wow-duration="1.5s" data-wow-delay=".4s">
+                    <div class="counter-icon"> <img alt="image" src="{% static 'images/icons/review.svg' %}"> </div>
+                    <div class="coundown d-flex flex-column">
+                        <h3 class="odometer" data-odometer-final="1250">&nbsp;</h3>
+                        <p>Good Reviews</p>
+                    </div>
+                </div>
+            </div>
+            <div class="col-xl-3 col-lg-4 col-md-6 col-sm-10 col-10">
+                <div class="counter-single text-center d-flex flex-row hover-border1 wow fadeInDown"
+                    data-wow-duration="1.5s" data-wow-delay=".4s">
+                    <div class="counter-icon"> <img alt="image" src="{% static 'images/icons/smily.svg' %}"> </div>
+                    <div class="coundown d-flex flex-column">
+                        <h3 class="odometer" data-odometer-final="4250">&nbsp;</h3>
+                        <p>Winner Customer</p>
+                    </div>
+                </div>
+            </div>
+            <div class="col-xl-3 col-lg-4 col-md-6 col-sm-10 col-10">
+                <div class="counter-single text-center d-flex flex-row hover-border1 wow fadeInDown"
+                    data-wow-duration="1.5s" data-wow-delay=".8s">
+                    <div class="counter-icon"> <img alt="image" src="{% static 'images/icons/comment.svg' %}"> </div>
+                    <div class="coundown d-flex flex-column">
+                        <h3 class="odometer" data-odometer-final="500">&nbsp;</h3>
+                        <p>New Comments</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}

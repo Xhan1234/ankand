@@ -1,0 +1,532 @@
+{% extends '_base.html' %}
+{% load static %}
+{% block contents %}
+{% load tz %}  {# Load the timezone template tags #}
+{% get_current_timezone as TIME_ZONE %}  {# Get the current timezone #}
+
+{% comment %} Current time in UTC: {% now "Y-m-d H:i:s" %} {% endcomment %}
+{% comment %} Current time in {{ TIME_ZONE }} timezone: {{ localtime }} {% endcomment %}
+<style>
+    figure.zoom {
+        background-position: 50% 50%;
+        position: relative;
+        overflow: hidden;
+        cursor: zoom-in;
+        background-size: 1000px;
+      }
+      figure.zoom img:hover {
+        opacity: 0;
+    }
+      figure.zoom img {
+        transition: transform: 0.5s;
+        display: block;
+      }
+
+      *{
+        margin: 0;
+        padding: 0;
+    }
+    .rate {
+        float: left;
+        height: 56px;
+        padding: 0 0px;
+    }
+    .rate:not(:checked) > input {
+        position:absolute;
+    }
+    input[type="radio"]{visibility:hidden;}
+    .rate:not(:checked) > label {
+        float:right;
+        width:1em;
+        overflow:hidden;
+        white-space:nowrap;
+        cursor:pointer;
+        font-size:30px;
+        color:#ccc;
+    }
+    .rate:not(:checked) > label:before {
+        content: '★ ';
+    }
+    .rate > input:checked ~ label {
+        color: #ffc700;    
+    }
+    .rate:not(:checked) > label:hover,
+    .rate:not(:checked) > label:hover ~ label {
+        color: #deb217;  
+    }
+    .rate > input:checked + label:hover,
+    .rate > input:checked + label:hover ~ label,
+    .rate > input:checked ~ label:hover,
+    .rate > input:checked ~ label:hover ~ label,
+    .rate > label:hover ~ input:checked ~ label {
+        color: #c59b08;
+    }
+
+</style>
+
+<script>
+    function zoom(e){
+        var zoomer = e.currentTarget;
+        e.offsetX ? offsetX = e.offsetX : offsetX = e.touches[0].pageX
+        e.offsetY ? offsetY = e.offsetY : offsetX = e.touches[0].pageX
+        x = offsetX/zoomer.offsetWidth*100
+        y = offsetY/zoomer.offsetHeight*100
+        zoomer.style.backgroundPosition = x + '% ' + y + '%';
+    }
+</script>
+
+<div class="inner-banner">
+    <div class="container">
+        <h2 class="inner-banner-title  wow fadeInLeft" data-wow-duration="1.5s" data-wow-delay=".4s">Auction Details
+        </h2>
+        <nav aria-label="breadcrumb">
+            <ol class="breadcrumb">
+                <li class="breadcrumb-item"><a href="index.html">Home</a></li>
+                <li class="breadcrumb-item active">Auction Details</li>
+            </ol>
+        </nav>
+    </div>
+</div>
+
+<div class="auction-details-section pt-120 pb-120">
+    <img alt="image" src="{% static 'images/bg/section-bg.png' %}" class="img-fluid section-bg-top">
+    <img alt="image" src="{% static 'images/bg/section-bg.png' %}" class="img-fluid section-bg-bottom">
+    <div class="container">
+        <div class="messages">
+            {% for message in messages %}
+            <div class="alert {% if message.tags == 'error' %}alert-danger{% endif %}
+                    {% if message.tags == 'success' %}alert-success{% endif %}
+                    {% if message.tags == 'info' %}alert-info{% endif %}">
+                {{ message }}
+            </div>
+            {% endfor %}
+        </div>
+        <div id="message-container"></div>
+        <div class="row g-4 mb-50">
+            <div
+                class="col-xl-6 col-lg-7 d-flex flex-row align-items-start justify-content-lg-start justify-content-center flex-md-nowrap flex-wrap gap-4">
+                <ul class="nav small-image-list d-flex flex-md-column flex-row justify-content-center gap-4  wow fadeInDown"
+                    data-wow-duration="1.5s" data-wow-delay=".4s">
+                    {% if auction.image %}
+                    <li class="nav-item">
+                        <div id="details-img1" data-bs-toggle="pill" data-bs-target="#gallery-img1"
+                            aria-controls="gallery-img1">
+                            <img alt="image" src="{{ auction.image.url }}" class="img-fluid">
+                        </div>
+                    </li>
+                    {% endif %}
+                    {% if auction.image1 %}
+                    <li class="nav-item">
+                        <div id="details-img2" data-bs-toggle="pill" data-bs-target="#gallery-img2"
+                            aria-controls="gallery-img2">
+                            <img alt="image" src="{{ auction.image1.url }}" class="img-fluid">
+                        </div>
+                    </li>
+                    {% endif %}
+                    {% if auction.image2 %}
+                    <li class="nav-item">
+                        <div id="details-img3" data-bs-toggle="pill" data-bs-target="#gallery-img3"
+                            aria-controls="gallery-img3">
+                            <img alt="image" src="{{ auction.image2.url }}" class="img-fluid">
+                        </div>
+                    </li>
+                    {% endif %}
+                </ul>
+                <div class="tab-content mb-4 d-flex justify-content-lg-start justify-content-center  wow fadeInUp"
+                    data-wow-duration="1.5s" data-wow-delay=".4s">
+                    {% if auction.image %}
+                    <div class="tab-pane big-image show active" id="gallery-img1">
+                        {% if not auction.closed %}
+                            <div class="auction-gallery-timer d-flex align-items-center justify-content-center flex-wrap">
+                                <h3><span id="days"></span><span id="hours"></span><span id="minutes"></span><span id="seconds"></span></h3>
+                            </div>
+                        {% endif %}
+
+                        <figure class="zoom" onmousemove="zoom(event)" style="background-image: url({{ auction.image.url }});">
+                            <img src="{{ auction.image.url }}" style="{% if not auction.closed %}height: 350px;{% else %}height: 410px;{% endif %} width: 500px;"/>
+                          </figure>
+                    </div>
+                    {% endif %}
+                    {% if auction.image1 %}
+                    <div class="tab-pane big-image fade" id="gallery-img2">
+                    {% if not auction.closed %}
+                        <div class="auction-gallery-timer d-flex align-items-center justify-content-center flex-wrap">
+                            <h3><span id="days1"></span><span id="hours1"></span><span id="minutes1"></span><span id="seconds1"></span></h3>
+                        </div>
+                    {% endif %}
+                  
+                        <figure class="zoom" onmousemove="zoom(event)" style="background-image: url({{ auction.image1.url }});">
+                            <img src="{{ auction.image1.url }}" style="{% if not auction.closed %}height: 350px;{% else %}height: 410px;{% endif %} width: 500px;"/>
+                          </figure>
+                    </div>
+                    {% endif %}
+                    {% if auction.image2 %}
+                    <div class="tab-pane big-image fade" id="gallery-img3">
+                    {% if not auction.closed %}
+                        <div class="auction-gallery-timer d-flex align-items-center justify-content-center flex-wrap">
+                            <h3><span id="days2"></span><span id="hours2"></span><span id="minutes2"></span><span id="seconds2"></span></h3>
+                        </div>
+                    {% endif %}
+
+                        <figure class="zoom" onmousemove="zoom(event)" style="background-image: url({{ auction.image2.url }});">
+                            <img src="{{ auction.image2.url }}" style="{% if not auction.closed %}height: 350px;{% else %}height: 410px;{% endif %} width: 500px;"/>
+                          </figure>
+                    </div>
+                    {% endif %}
+                </div>
+            </div>
+            <div class="col-xl-6 col-lg-5">
+                <div class="auction-details-right wow fadeInDown" data-wow-duration="1.5s" data-wow-delay=".2s">
+                    <h3>{{ auction.title }}</h3>
+
+                    {% if auction.closed %}
+                    Rating: {{ average }}
+                    <h4>
+                        <div class="rate">
+                            <input readonly type="radio" id="star15" value="5" {% if average >= 4.5 %}checked{% endif %}>
+                            <label for="star15">5 stars</label>
+                            <input readonly type="radio" id="star14" value="4" {% if average >= 3.5 and average < 4.5 %}checked{% endif %}>
+                            <label for="star14">4 stars</label>
+                            <input readonly type="radio" id="star13" value="3" {% if average >= 2.5 and average < 3.5 %}checked{% endif %}>
+                            <label for="star13">3 stars</label>
+                            <input readonly type="radio" id="star12" value="2" {% if average >= 1.5 and average < 2.5 %}checked{% endif %}>
+                            <label for="star12">2 stars</label>
+                            <input readonly type="radio" id="star11" value="1" {% if average >= 0.5 and average < 1.5 %}checked{% endif %}>
+                            <label for="star11">1 star</label>
+                        </div>
+                        <br>
+                    </h4>
+                    <br>
+                    {% endif %}
+                    <span>Author: {{ auction.author }}</span>
+                    <p class="para">{{ auction.description }}</p>
+                    {% if auction.type == 'auction' or auction.type == 'auction & buy-it-now' %}
+                    <h4>Bidding Price:
+                        <span id="updated-auction_price">
+                            ${{ auction.price }}
+                        </span>
+                        {% if auction.winnerBid is not None %}
+                            <br>
+                            <span class="text-green">Sold</span>
+                        {% elif auction.winnerBid is None and auction.closed %}
+                            <br>
+                            <span class="text-danger">Unsold</span>
+                        {% elif auction.quantity < 1 %}
+                            <br>
+                            <span class="text-red">Out of Stock</span>
+                        {% endif %}
+                    {% endif %}
+
+                    </h4>
+                    
+                    {% if auction.type == 'auction' or auction.type == 'auction & buy-it-now' %}
+                    {% if bids_amount > 0 %}
+                        <a href="{% url 'auction-bid-details' auction.slug %}">[ <span class="text-primary" id="updated-bids_amount"> {{ bids_amount }} </span> bids ]</a>
+                        <span class="text-info"><label id="updated-reverse">{{ reverse }}</label><span>
+                    {% endif %}
+                    {% endif %}
+
+                    {% if not auction.closed %}
+                    <div class="bid-form">
+                        {% if auction.type == 'auction' or auction.type == 'auction & buy-it-now' %}
+                        <div class="form-title">
+                        {% if auction.winnerBid is not None %}
+                            <h5>Winning Bid</h5>
+                            <p>Bid Amount : ${{ auction.price }}</p>
+                        {% else %}
+                            <h5>Bid Now</h5>
+                            <p>Bid Amount : Minimum Bid $<span id="updated-nextBidprice">{{ nextBidprice }}</span></p>
+                        {% endif %}
+                        </div>
+                        {% endif %}
+                        
+                        {% if auction.type == 'auction' or auction.type == 'auction & buy-it-now' %}
+                        <form id="my-form">
+                            {% csrf_token %}
+                            <div class="form-inner gap-2">
+                            {% if auction.quantity > 0 %}
+                                <input type="text" name="bid_price" id="floatInput" required placeholder="$00.00">
+                                <input type="hidden" name="auction_id" value="{{ auction_id }}" required>
+                                <button class="eg-btn btn--primary button btn--md" id="submit-button" type="submit">Place Bid</button>
+                            {% else %}
+                                <input type="text" disabled="disabled" id="floatInput" required placeholder="$00.00">
+                                <button disabled="disabled" class="eg-btn btn--secondary button btn--md">Place Bid</button>
+                            {% endif %}
+                            </div>
+                        </form>
+                        {% endif %}
+
+                        {% if auction.type == 'buy-it-now' or auction.type == 'auction & buy-it-now' %}
+                        {% if auction.direct_buy is not None %}
+                        <hr>
+                        <div class="form-title">
+                            <div class="row">
+                                <div class="col-md-6">
+                                    <h5>Buy It Now</h5>
+                                    <p>Price: ${{ auction.direct_buy }}</p>
+                                </div>
+                                <div class="col-md-6">
+                                    <div class="form-inner" style="justify-content: right;">
+                                        {% if auction.quantity > 0 %}
+                                            <button onclick="window.location.href='{% url 'buy-it-now' auction.slug %}';" class="float-end eg-btn btn--primary3 button btn--md">Buy It Now</button>
+                                        {% else %}
+                                            <button class="float-end eg-btn btn--secondary button btn--md">Buy It Now</button>
+                                        {% endif %}
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        {% endif %}
+                        {% endif %}
+
+                    </div>
+                    {% else %}
+                        <div class="bid-form">
+                        <div class="form-title">
+                            <h5 class="text-danger">Auction Has Been Closed!</h5>
+                            {% if auction.winnerBid is not None %}
+                                <p>Winning Bid : ${{ auction.price }}</p>
+                                <p>Winner : {{ auction.winnerBid }}</p>
+                            {% endif %}
+                        </div>
+                    </div>
+                    {% endif %}
+                </div>
+            </div>
+        </div>
+        <div class="row d-flex justify-content-center g-4">
+            <div class="col-lg-8">
+                <ul class="nav nav-pills d-flex flex-row justify-content-start gap-sm-4 gap-3 mb-45 wow fadeInDown"
+                    data-wow-duration="1.5s" data-wow-delay=".2s" id="pills-tab" role="tablist">
+                    <li class="nav-item" role="presentation">
+                        <button class="nav-link active details-tab-btn" id="pills-home-tab" data-bs-toggle="pill"
+                            data-bs-target="#pills-home" type="button" role="tab" aria-controls="pills-home"
+                            aria-selected="true">Description</button>
+                    </li>
+                    <li class="nav-item" role="presentation">
+                        <button class="nav-link details-tab-btn" id="pills-bid-tab" data-bs-toggle="pill"
+                            data-bs-target="#pills-bid" type="button" role="tab" aria-controls="pills-bid"
+                            aria-selected="false">Send A Message</button>
+                    </li>
+                    {% if auction.closed %}
+                    <li class="nav-item" role="presentation">
+                        <button class="nav-link details-tab-btn" id="pills-rate-tab" data-bs-toggle="pill"
+                            data-bs-target="#pills-rate" type="button" role="tab" aria-controls="pills-rate"
+                            aria-selected="false">Rate This Product</button>
+                    </li>
+                    {% endif %}
+                </ul>
+                <div class="tab-content" id="pills-tabContent">
+                    <div class="tab-pane fade show active wow fadeInUp" data-wow-duration="1.5s"
+                        data-wow-delay=".2s" id="pills-home" role="tabpanel" aria-labelledby="pills-home-tab">
+                        <div class="describe-content">
+                            <p class="para">{{ auction.details_description }}</p>
+                        </div>
+                    </div>
+                    <div class="tab-pane fade" id="pills-bid" role="tabpanel" aria-labelledby="pills-bid-tab">
+                        <div class="bid-list-area">
+                            {% if user.is_authenticated %}
+                            <form method="post">
+                                {% csrf_token %}
+                                <div class="comment-form">
+                                    <textarea class="form-control" rows="2" placeholder="Write Message Here ..." id="comment" name="message_details"></textarea>
+                                    <input type="hidden" name="auction_id" value="{{ auction_id }}" required>
+                                </div>
+                                <br>
+                                <button type="submit" class="eg-btn btn--primary border btn--sm">Send Message</button>
+                            </form>
+                            {% endif %}
+                            <br>
+                        </div>
+                    </div>
+
+                    <div class="tab-pane fade" id="pills-rate" role="tabpanel" aria-labelledby="pills-rate-tab">
+                        <div class="bid-list-area">
+                            {% if user.is_authenticated %}
+                            <form method="POST" action="{% url 'rating' auction_id %}">
+                                {% csrf_token %}
+                                    <h5>Rating: <h5>
+                                    <div class="rate">
+                                        <input type="radio" id="star5" name="rate" value="5">
+                                        <label for="star5">5 stars</label>
+                                        <input type="radio" id="star4" name="rate" value="4">
+                                        <label for="star4">4 stars</label>
+                                        <input type="radio" id="star3" name="rate" value="3">
+                                        <label for="star3">3 stars</label>
+                                        <input type="radio" id="star2" name="rate" value="2">
+                                        <label for="star2">2 stars</label>
+                                        <input type="radio" id="star1" name="rate" value="1">
+                                        <label for="star1">1 star</label>
+                                    </div>
+                                    <br>
+                                <div class="comment-form">
+                                    <textarea class="form-control" rows="2" placeholder="Write Comment Here ..." id="comment" name="comment"></textarea>
+                                </div>
+                                <br>
+                                <button type="submit" class="eg-btn btn--primary border btn--sm">Submit Rating</button>
+                            </form>
+                            {% endif %}
+                            <br>
+                            <hr>
+                            <ul class="bid-list">
+                                {% for review in reviews %}
+                                <li>
+                                    <div class="row d-flex align-items-center">
+                                        <div class="col-4">
+                                            <div class="bidder-area">
+                                                <div class="bidder-img">
+                                                    <img alt="image" src="{{ review.user.profile_picture_url }}" style="border-radius: 50%; height: 60px; width: 60px;">
+                                                </div>
+                                                <div class="bidder-content">
+                                                    <a href="#">
+                                                        <h6>{{ review.user.username }}</h6>
+                                                    </a>
+                                                    <div class="rate">
+                                                        <input readonly type="radio" id="star10"  value="5" {% if review.rate == 5.0 %}checked{% endif %} />
+                                                        <label for="star10">5 stars</label>
+                                                        <input readonly type="radio" id="star9"  value="4" {% if review.rate == 4.0 %}checked{% endif %} />
+                                                        <label for="star9">4 stars</label>
+                                                        <input readonly type="radio" id="star8"  value="3" {% if review.rate == 3.0 %}checked{% endif %} />
+                                                        <label for="star8">3 stars</label>
+                                                        <input readonly type="radio" id="star7"  value="2" {% if review.rate == 2.0 %}checked{% endif %} />
+                                                        <label for="star7">2 stars</label>
+                                                        <input readonly type="radio" id="star6" value="1" {% if review.rate == 1.0 %}checked{% endif %} />
+                                                        <label for="star6">1 star</label>
+                                                    </div>
+                                                    
+                                                </div>
+                                            </div>
+                                        </div>
+                                        <div class="col-8 text-end">
+                                            <div class="bid-time">
+                                                <p>{{ review.comment }}</p>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </li>
+                                {% endfor %}
+                            </ul>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="col-lg-4">
+
+            </div>
+        </div>
+    </div>
+</div>
+<script src="https://ajax.googleapis.com/ajax/libs/jquery/2.1.1/jquery.min.js"></script>
+<script>
+    $(document).ready(function(){
+        $('#floatInput').on('keydown', function(e){
+            // Allow: backspace, delete, tab, escape, enter, '.', and '-'
+            if ($.inArray(e.keyCode, [46, 8, 9, 27, 13, 110, 190, 109, 189]) !== -1 ||
+                    // Allow: Ctrl+A, Command+A
+                (e.keyCode === 65 && (e.ctrlKey === true || e.metaKey === true)) || 
+                    // Allow: Ctrl+C, Command+C
+                (e.keyCode === 67 && (e.ctrlKey === true || e.metaKey === true)) || 
+                    // Allow: Ctrl+V, Command+V
+                (e.keyCode === 86 && (e.ctrlKey === true || e.metaKey === true)) || 
+                    // Allow: Ctrl+X, Command+X
+                (e.keyCode === 88 && (e.ctrlKey === true || e.metaKey === true)) || 
+                    // Allow: home, end, left, right
+                (e.keyCode >= 35 && e.keyCode <= 39)) {
+                        // Let it happen, don't do anything
+                        return;
+            }
+            // Ensure that it is a number and stop the keypress
+            if ((e.shiftKey || (e.keyCode < 48 || e.keyCode > 57)) && (e.keyCode < 96 || e.keyCode > 105) && e.keyCode !== 190 && e.keyCode !== 110) {
+                e.preventDefault();
+            }
+        });
+    });
+</script>
+
+<script>
+function makeTimer() {
+    var endTime=new Date({{ auction.expired_date|date:"U" }} * 1000);
+    endTime = (Date.parse(endTime) / 1000);
+
+        var now = new Date();
+        now = (Date.parse(now) / 1000);
+
+        var timeLeft = endTime - now;
+
+        var days = Math.floor(timeLeft / 86400);
+        var hours = Math.floor((timeLeft - (days * 86400)) / 3600);
+        var minutes = Math.floor((timeLeft - (days * 86400) - (hours * 3600 )) / 60);
+        var seconds = Math.floor((timeLeft - (days * 86400) - (hours * 3600) - (minutes * 60)));
+
+        if (hours < "10") { hours = "0" + hours; }
+        if (minutes < "10") { minutes = "0" + minutes; }
+        if (seconds < "10") { seconds = "0" + seconds; }
+
+        $("#days").html(days + "<span>D:</span>");
+        $("#hours").html(hours + "<span>H:</span>");
+        $("#minutes").html(minutes + "<span>M:</span>");
+        $("#seconds").html(seconds + "<span>S</span>");
+
+        $("#days1").html(days + "<span>D:</span>");
+        $("#hours1").html(hours + "<span>H:</span>");
+        $("#minutes1").html(minutes + "<span>M:</span>");
+        $("#seconds1").html(seconds + "<span>S</span>");
+
+        $("#days2").html(days + "<span>D:</span>");
+        $("#hours2").html(hours + "<span>H:</span>");
+        $("#minutes2").html(minutes + "<span>M:</span>");
+        $("#seconds2").html(seconds + "<span>S</span>");
+
+    }
+    setInterval(function() { 
+        var endTime=new Date({{ auction.expired_date|date:"U" }} * 1000);
+        endTime = (Date.parse(endTime) / 1000);
+    
+        var now = new Date();
+        now = (Date.parse(now) / 1000);
+
+        var closed = "{{ auction.closed }}" ;
+        if(now >= endTime && closed === "False"){
+            // If the time has ran out, then refresh the page which will cause auction to close!
+            window.location.href = window.location.href
+        }else{
+            makeTimer(); 
+        }
+    }, 1000);
+</script>
+
+<script>
+    $(document).ready(function() {
+        $('#submit-button').click(function(e) {
+            e.preventDefault(); // Prevent default form submission
+            
+            var formData = $('#my-form').serialize(); // Serialize form data
+            
+            $.ajax({
+                type: 'POST',
+                url: '{% url 'auctions-submit-ajax' %}', // URL of the Django view
+                data: formData,
+                success: function(response) {
+                    // Handle successful response
+                    if (response.success) {
+                        $('#message-container').html('<div class="alert alert-success">' + response.message + '</div>');
+                        // Additional logic for updating other HTML content if needed
+                    } else {
+                        $('#message-container').html('<div class="alert alert-danger">' + response.message + '</div>');
+                    }
+                    $('#updated-auction_price').text(response.auction_price);
+                    $('#updated-nextBidprice').text(response.nextBidprice);
+                    $('#updated-bids_amount').text(response.bids_amount);
+                    $('#updated-reverse').text(response.reverse);
+                    console.log(response)
+                },
+                error: function(xhr, errmsg, err) {
+                    // Handle error
+                    console.log(xhr.status + ": " + xhr.responseText);
+                }
+            });
+        });
+    });
+</script>
+  
+{% endblock %}

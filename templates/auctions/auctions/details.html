@@ -1,0 +1,64 @@
+{% extends '_base.html' %}
+{% load static %}
+{% block contents %}
+<div class="inner-banner">
+    <div class="container">
+        <h2 class="inner-banner-title  wow fadeInLeft" data-wow-duration="1.5s" data-wow-delay=".4s">Auction Closed
+        </h2>
+        <nav aria-label="breadcrumb">
+            <ol class="breadcrumb">
+                <li class="breadcrumb-item"><a href="index.html">Home</a></li>
+                <li class="breadcrumb-item active" aria-current="page">Auction Closed</li>
+            </ol>
+        </nav>
+    </div>
+</div>
+
+<div class="auction-details-section pt-120 pb-120">
+    <img alt="image" src="{% static 'images/bg/section-bg.png' %}" class="img-fluid section-bg-top">
+    <img alt="image" src="{% static 'images/bg/section-bg.png' %}" class="img-fluid section-bg-bottom">
+    <div class="container">
+
+        <div class="row g-4">
+            <div class="col-xl-5 col-lg-7 d-flex flex-row align-items-start justify-content-lg-start justify-content-center flex-md-nowrap flex-wrap gap-4">
+  
+                <div class="tab-content mb-4 d-flex justify-content-lg-start justify-content-center  wow fadeInUp"
+                    data-wow-duration="1.5s" data-wow-delay=".4s">
+                    <div class="tab-pane big-image fade show active" id="gallery-img1">
+                        <img alt="image" src="{{ auction.image.url }}" class="img-fluid" style="height: 400px; width: 500px;">
+                    </div>
+                </div>
+            </div>
+            <div class="col-xl-6 col-lg-5">
+                <div class="auction-details-right  wow fadeInDown" data-wow-duration="1.5s" data-wow-delay=".2s">
+                    <a><h3>{{ auction.title }}</h3></a>
+                    <h5>Condition: {{ auction.condition }}</h5>
+                    <h5>Auction Closed On: {{ auction.expired_date }}</h5>
+                    <h6>Author: {{ auction.author }}</h6>
+                    <p class="para">{{ auction.description|slice:":300" }}</p>
+                    <div class="bid-form">
+                        <div class="form-title" style="margin-bottom: 0px;">
+                            {% if auction.winnerBid %}
+                                <h5> Winner: {{ auction.winnerBid.user.username }}</h5>
+                            {% else %}
+                            <h5> Winner: Auction Running!</h5>
+                            {% endif %}
+
+                            <h6>Bidding Price: <span>$ {{ auction.price }}</span></h6>
+                            <h6>Winning Price:
+                            {% if auction.winnerBid %}
+                                $ {{ auction.winnerBid }}
+                            {% else %}
+                                Auction Running!
+                            {% endif %}
+                            </h6>
+                        </div>
+
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+{% endblock %}

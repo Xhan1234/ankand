@@ -1,0 +1,46 @@
+{% extends "chat/base.html" %}
+
+{% block title %}{{ inbox }}{% endblock %}
+{% block subtitle %}Read all of your inbox messages here{% endblock %}
+
+{% block content%}
+
+<div class="col-md-12">
+    <div class="card mb-4 box-shadow">
+      <div class="card-body">
+        <h4>Messages</h4>
+      </div>
+    </div>
+  </div>
+
+{% for message in messages %}
+
+<div class="col-md-6">
+  <div class="card mb-4 box-shadow">
+    <div class="card-body">
+      <h4>{{message.subject}}</h4>
+      <p class="card-text">{{message.message}}</p>
+      <p class="card-text">auction Title: {{ message.auction_title }}</p>  <!-- Display the auction_title -->
+      <div class="d-flex justify-content-between align-items-center">
+        <div class="btn-group">
+          <a class="btn btn-sm btn-outline-secondary" href="{% url 'read_message' message.chat.id %}">View Message</a>
+        </div>
+        <small class="text-muted">Sent at {{message.created_at}}</small>
+      </div>
+    </div>
+  </div>
+</div>
+{% endfor %}
+
+{% if not messages %}
+<div class="col-md-4">
+  <div class="card mb-4 box-shadow">
+    <div class="card-body">
+      <p class="card-text">You don't have any message to read</p>
+    </div>
+  </div>
+</div>
+{% endif %}
+
+
+{% endblock %}

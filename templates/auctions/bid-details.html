@@ -1,0 +1,183 @@
+{% extends '_base.html' %}
+{% load static %}
+{% load custom_filters %}
+{% block contents %}
+<style>
+    figure.zoom {
+        background-position: 50% 50%;
+        position: relative;
+        overflow: hidden;
+        cursor: zoom-in;
+        background-size: 1000px;
+      }
+      figure.zoom img:hover {
+        opacity: 0;
+    }
+      figure.zoom img {
+        transition: transform: 0.5s;
+        display: block;
+      }
+</style>
+
+<script>
+    function zoom(e){
+        var zoomer = e.currentTarget;
+        e.offsetX ? offsetX = e.offsetX : offsetX = e.touches[0].pageX
+        e.offsetY ? offsetY = e.offsetY : offsetX = e.touches[0].pageX
+        x = offsetX/zoomer.offsetWidth*100
+        y = offsetY/zoomer.offsetHeight*100
+        zoomer.style.backgroundPosition = x + '% ' + y + '%';
+    }
+</script>
+
+<div class="inner-banner">
+    <div class="container">
+        <h2 class="inner-banner-title  wow fadeInLeft" data-wow-duration="1.5s" data-wow-delay=".4s">Bid Details
+        </h2>
+        <nav aria-label="breadcrumb">
+            <ol class="breadcrumb">
+                <li class="breadcrumb-item"><a href="index.html">Home</a></li>
+                <li class="breadcrumb-item active">Bid Details</li>
+            </ol>
+        </nav>
+    </div>
+</div>
+
+
+<div class="auction-details-section pt-120 pb-120">
+    <img alt="image" src="{% static 'images/bg/section-bg.png' %}" class="img-fluid section-bg-top">
+    <img alt="image" src="{% static 'images/bg/section-bg.png' %}" class="img-fluid section-bg-bottom">
+    <div class="container">
+        <div class="row g-4 mb-50">
+            <div
+                class="col-xl-6 col-lg-7 d-flex flex-row align-items-start justify-content-lg-start justify-content-center flex-md-nowrap flex-wrap gap-4">
+                <ul class="nav small-image-list d-flex flex-md-column flex-row justify-content-center gap-4  wow fadeInDown"
+                    data-wow-duration="1.5s" data-wow-delay=".4s">
+                    {% if auction.image %}
+                    <li class="nav-item">
+                        <div id="details-img1" data-bs-toggle="pill" data-bs-target="#gallery-img1"
+                            aria-controls="gallery-img1">
+                            <img alt="image" src="{{ auction.image.url }}" class="img-fluid">
+                        </div>
+                    </li>
+                    {% endif %}
+                    {% if auction.image1 %}
+                    <li class="nav-item">
+                        <div id="details-img2" data-bs-toggle="pill" data-bs-target="#gallery-img2"
+                            aria-controls="gallery-img2">
+                            <img alt="image" src="{{ auction.image1.url }}" class="img-fluid">
+                        </div>
+                    </li>
+                    {% endif %}
+                    {% if auction.image2 %}
+                    <li class="nav-item">
+                        <div id="details-img3" data-bs-toggle="pill" data-bs-target="#gallery-img3"
+                            aria-controls="gallery-img3">
+                            <img alt="image" src="{{ auction.image2.url }}" class="img-fluid">
+                        </div>
+                    </li>
+                    {% endif %}
+                </ul>
+                <div class="tab-content mb-4 d-flex justify-content-lg-start justify-content-center  wow fadeInUp"
+                    data-wow-duration="1.5s" data-wow-delay=".4s">
+                    {% if auction.image %}
+                    <div class="tab-pane big-image show active" id="gallery-img1">
+                        <figure class="zoom" onmousemove="zoom(event)" style="background-image: url({{ auction.image.url }});">
+                            <img src="{{ auction.image.url }}" style=" height: 410px; width: 500px;"/>
+                          </figure>
+                    </div>
+                    {% endif %}
+                    {% if auction.image1 %}
+                    <div class="tab-pane big-image fade" id="gallery-img2">
+                        <figure class="zoom" onmousemove="zoom(event)" style="background-image: url({{ auction.image1.url }});">
+                            <img src="{{ auction.image1.url }}" style="height: 410px; width: 500px;"/>
+                          </figure>
+                    </div>
+                    {% endif %}
+                    {% if auction.image2 %}
+                    <div class="tab-pane big-image fade" id="gallery-img3">
+                        <figure class="zoom" onmousemove="zoom(event)" style="background-image: url({{ auction.image2.url }});">
+                            <img src="{{ auction.image2.url }}" style="height: 410px; width: 500px;"/>
+                          </figure>
+                    </div>
+                    {% endif %}
+                </div>
+            </div>
+            <div class="col-xl-6 col-lg-5">
+                <div class="auction-details-right wow fadeInDown" data-wow-duration="1.5s" data-wow-delay=".2s">
+                    <h3>{{ auction.title }}</h3>
+                    <h6> Author: {{ auction.author }}</h6>
+                    <p class="para">{{ auction.description }}</p>
+                    <p class="para">{{ auction.details_description|truncatechars:300 }}</p>
+                    <h4>
+                    {% if auction.type == 'auction' %}
+                    {% if auction.winnerBid %}
+                        Winning Price:
+                    {% else %}
+                        Bidding Price:
+                    {% endif %}
+                        <span> ${{ auction.price }}</span>
+                    {% else %}
+                        Sold Price: <span> ${{ auction.direct_buy }}</span>
+                    {% endif %}
+                    </h4>
+
+                        <div class="form-title" style="margin-bottom: 0px;">
+                            {% if auction.winnerBid and auction.winnerBid.type == 'auction' %}
+                                <h5> Winner: {{auction.winnerBid.user.username}}</h5>
+                            {% elif auction.winnerBid and auction.winnerBid.type == 'buy-it-now' %}
+                                <h5> Direct Sold</h5>
+                            {% else %}
+                                <h5> Winner: Nobody</h5>
+                            {% endif %}
+                            <h6>Status:
+                            {% if auction.winnerBid %}
+                                Sold
+                            {% else %}
+                                Unsold
+                            {% endif %}
+                            </h6>
+                        </div>
+                </div>
+            </div>
+            <hr>
+
+            <div class="testimonial-single style2 hover-border1 wow fadeInDown">
+                <div class="testi-content">
+                    <p class="para">Bidding involves placing offers to purchase items or services, often in competitive environments such as auctions or online marketplaces.</p>
+                    <p class="para">All the bidding lists are here.</p>
+                </div>
+            </div>
+
+            <div class="col-xl-6 col-lg-5">
+                <table class="table">
+                    <thead>
+                        <tr>
+                        <th scope="col">#</th>
+                        <th scope="col">User</th>
+                        <th scope="col">Customer Username</th>
+                        <th scope="col">Bid Amount</th>
+                        <th scope="col">Created Date</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                    {% for bid in page_obj %}
+                        <tr>
+                            <th scope="row">{{ forloop.counter }}</th>
+                            <th><img class="rounded-circle article-img" src="{{ bid.user.profile_picture_url }}" height="30px;" width="30px;"></th>
+                            <td>
+                            {{ bid.user.username|hide_middle_chars }}
+                            </td>
+                            <td>$ {{ bid.bid_amount|floatformat:"2" }}</td>
+                            <td><small class="text-muted">{{ bid.created_at }}</small></td>
+                        </tr>
+                    {% endfor %}
+                    </tbody>
+                </table>
+            </div>
+            {% include '_partials/_paginate.html' with alignment='float-end' %}
+        </div>
+    </div>
+</div>
+
+{% endblock %}

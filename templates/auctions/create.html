@@ -1,0 +1,100 @@
+{% extends 'dashboard/_index.html' %}
+{% load static %}
+{% load crispy_forms_tags %}
+{% block dashboard_contents %}
+<div class="messages">
+    {% for message in messages %}
+    <div class="alert {% if message.tags == 'error' %}alert-danger{% endif %}
+            {% if message.tags == 'success' %}alert-success{% endif %}
+            {% if message.tags == 'info' %}alert-info{% endif %}">
+        {{ message }}
+    </div>
+    {% endfor %}
+</div>
+
+<div class="tab-pane fade show active" id="v-pills-profile" role="tabpanel"
+aria-labelledby="v-pills-profile-tab">
+<div class="dashboard-profile">
+    <div class="owner">
+        <div class="content">
+            <h3>Create A New auction</h3>
+        </div>
+    </div>
+    <div class="form-wrapper">
+        <form method="POST" enctype="multipart/form-data">
+            {% csrf_token %}
+            <div class="row">
+                <div class="col-xl-12 col-lg-12 col-md-6">
+                    {{ form|crispy }}
+                </div>
+                <div class="col-12">
+                    <div class="button-group">
+                        <button type="submit" class="eg-btn profile-btn">Submit auction</button>
+                        <button class="eg-btn cancel-btn">Cancel</button>
+                    </div>
+                </div>
+            </div>
+        </form> 
+    </div>
+</div>
+</div>
+
+
+<script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+<script>
+    $(document).ready(function() {
+        // Hide the additional div initially
+        $('#div_id_price').hide();
+        $('#div_id_reserve_price').hide();
+        $('#div_id_direct_buy').hide();
+        $('#div_id_bid_increments').hide();
+
+        // Add onchange event listener to the select element
+        $('#id_type').change(function() {
+            var selectedValue = $(this).find("option:selected").val();
+            var price = $('#div_id_price')
+            var reserve_price = $('#div_id_reserve_price')
+            var direct_buy = $('#div_id_direct_buy')
+            var bid_increments = $('#div_id_bid_increments')
+
+            if (selectedValue === 'auction') {
+                price.show();
+                reserve_price.show()
+                bid_increments.show()
+                direct_buy.hide()
+                price.required = true;
+                reserve_price.required = true;
+                direct_buy.required = false;
+            } else if (selectedValue === 'buy-it-now') {
+                price.hide();
+                reserve_price.hide()
+                bid_increments.hide()
+                direct_buy.show()
+                price.required = false;
+                reserve_price.required = false;
+                direct_buy.required = true;
+            } else if (selectedValue === 'auction & buy-it-now') {
+                price.show();
+                reserve_price.show()
+                direct_buy.show()
+                bid_increments.show()
+                price.required = true;
+                reserve_price.required = true;
+                direct_buy.required = true;
+            } else {
+                price.hide();
+                reserve_price.hide()
+                direct_buy.hide()
+                bid_increments.hide()
+                price.required = false;
+                reserve_price.required = false;
+                direct_buy.required = false;
+            }
+
+        });
+
+        // Trigger change event once on page load to get the initial selected value
+        $('#id_type').change();
+    });
+</script>
+{% endblock %}

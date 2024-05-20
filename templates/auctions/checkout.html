@@ -1,0 +1,249 @@
+{% extends '_base.html' %}
+{% load static %}
+{% block contents %}
+<div class="inner-banner">
+    <div class="container">
+        <h2 class="inner-banner-title  wow fadeInLeft" data-wow-duration="1.5s" data-wow-delay=".4s">Order Details
+        </h2>
+        <nav aria-label="breadcrumb">
+            <ol class="breadcrumb">
+                <li class="breadcrumb-item"><a href="index.html">Home</a></li>
+                <li class="breadcrumb-item active">Order Details</li>
+            </ol>
+        </nav>
+    </div>
+</div>
+
+<section class="bg-light py-5">
+    <div class="container">
+        <div class="row">
+            <div class="col-xl-8 col-lg-8 mb-4">
+            <div class="blog-widget-item">
+                <form action="{% url 'confirm-purchase' %}" method="post">
+                    {% csrf_token %}
+                <!-- Checkout -->
+                <div class="card shadow-0 border">
+                    <div class="p-4">
+                        <h5 class="card-title mb-3">Guest checkout</h5>
+                        <div class="row">
+                            <div class="col-6 mb-3">
+                                <p class="mb-0">First name</p>
+                                <div class="form-outline">
+                                    <input class="form-control" id="first_name" name="first_name"
+                                           value="{{ user_data.first_name }}" type="text"/>
+                                </div>
+                            </div>
+
+                            <div class="col-6">
+                                <p class="mb-0">Last name</p>
+                                <div class="form-outline">
+                                    <input class="form-control" id="last_name" name="last_name"
+                                           value="{% if user_data.last_name %}{{ user_data.last_name }}{% endif %}"
+                                           type="text"/>
+                                </div>
+                            </div>
+
+                            <div class="col-6 mb-3">
+                                <p class="mb-0">Phone</p>
+                                <div class="form-outline">
+                                    <input class="form-control" id="phone" name="phone"
+                                           value="{% if user_data.phone %}{{ user_data.phone }}{% endif %}"
+                                           type="tel"/>
+                                </div>
+                            </div>
+
+                            <div class="col-6 mb-3">
+                                <p class="mb-0">Email</p>
+                                <div class="form-outline">
+                                    <input class="form-control" id="email" name="email"
+                                           value="{{ user_data.email }}" type="email"/>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="form-check">
+                            <input class="form-check-input" id="flexCheckDefault" type="checkbox" value=""/>
+                            <label class="form-check-label" for="flexCheckDefault">Keep me up to date on news</label>
+                        </div>
+
+                        <hr class="my-4"/>
+
+                        <h5 class="card-title mb-3">Shipping info</h5>
+
+                        <div class="row mb-3">
+                            <div class="col-lg-4 mb-3">
+                                <!-- Default checked radio -->
+                                <div class="form-check h-100 border rounded-3">
+                                    <div class="p-3">
+                                        <input checked class="form-check-input" id="flexRadioDefault1"
+                                               name="flexRadioDefault" type="radio"/>
+                                        <label class="form-check-label" for="flexRadioDefault1">
+                                            Express delivery <br/>
+                                            <small class="text-muted">3-4 days via Fedex </small>
+                                        </label>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="col-lg-4 mb-3">
+                                <!-- Default radio -->
+                                <div class="form-check h-100 border rounded-3">
+                                    <div class="p-3">
+                                        <input class="form-check-input" id="flexRadioDefault2" name="flexRadioDefault"
+                                               type="radio"/>
+                                        <label class="form-check-label" for="flexRadioDefault2">
+                                            Post office <br/>
+                                            <small class="text-muted">20-30 days via post </small>
+                                        </label>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="col-lg-4 mb-3">
+                                <!-- Default radio -->
+                                <div class="form-check h-100 border rounded-3">
+                                    <div class="p-3">
+                                        <input class="form-check-input" id="flexRadioDefault3" name="flexRadioDefault"
+                                               type="radio"/>
+                                        <label class="form-check-label" for="flexRadioDefault3">
+                                            Self pick-up <br/>
+                                            <small class="text-muted">Come to our shop </small>
+                                        </label>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="row">
+                            <div class="col-sm-8 mb-3">
+                                <p class="mb-0">Address</p>
+                                <div class="form-outline">
+                                    <textarea class="form-control" id="address" name="address" type="text"/>{{ user_data.address }}</textarea>
+                                </div>
+                            </div>
+
+                            <div class="col-sm-8 mb-3">
+                                <p class="mb-0">Street</p>
+                                <div class="form-outline">
+                                    <input class="form-control" id="street" name="street"
+                                           value="{{ user_data.street }}" type="text"/>
+                                </div>
+                            </div>
+
+                            <div class="col-sm-4 mb-3">
+                                <p class="mb-0">State</p>
+                                <div class="form-outline">
+                                    <input class="form-control" id="state" name="state"
+                                           value="{{ user_data.state }}" type="text"/>
+                                </div>
+                            </div>
+
+                            <div class="col-sm-4 mb-3">
+                                <p class="mb-0">House</p>
+                                <div class="form-outline">
+                                    <input class="form-control" id="house" name="house"
+                                           value="{{ user_data.house }}" type="text"/>
+                                </div>
+                            </div>
+
+                            <div class="col-sm-4 col-6 mb-3">
+                                <p class="mb-0">Postal code</p>
+                                <div class="form-outline">
+                                    <input class="form-control" id="postal_code" name="postal_code"
+                                           value="{{ user_data.postal_code }}" type="text"/>
+                                </div>
+                            </div>
+
+                            <div class="col-sm-4 col-6 mb-3">
+                                <p class="mb-0">Zip</p>
+                                <div class="form-outline">
+                                    <input class="form-control" id="zip_code" name="zip_code"
+                                           value="{{ user_data.zip_code }}" type="text"/>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="form-check mb-3">
+                            <input class="form-check-input" id="flexCheckDefault1" type="checkbox" value=""/>
+                            <label class="form-check-label" for="flexCheckDefault1">Save this address</label>
+                        </div>
+
+                        <div class="mb-3">
+                            <p class="mb-0">Message to seller</p>
+                            <div class="form-outline">
+                                <textarea class="form-control" id="textAreaExample1" rows="2"></textarea>
+                            </div>
+                        </div>
+
+
+                        {% if cart_items %}
+                            <div class="float-end">
+                                <button class="btn btn-light border" id="cancelButton" type="button">Cancel</button>
+                                <button class="btn btn--primary border" type="submit">Confirm Checkout</button>
+                            </div>
+                        {% endif %}
+
+                    </div>
+                </div>
+                <!-- Checkout -->
+            </div>
+            </div>
+            <div class="col-xl-4 col-lg-4 d-flex justify-content-center">
+                <div class="blog-widget-item">
+                <div class="ms-lg-4 mt-4 mt-lg-0" style="max-width: 320px;">
+                    <h5 class="mb-3">Summary</h5>
+                    <hr>
+                    <div class="d-flex justify-content-between">
+                        <p class="mb-2">Total price:</p>
+                        <p class="mb-2">${{total_cost}}</p>
+                    </div>
+                    {% comment %} <div class="d-flex justify-content-between">
+                        <p class="mb-2">Discount:</p>
+                        <p class="mb-2 text-danger">- $00.00</p>
+                    </div> {% endcomment %}
+                    <div class="d-flex justify-content-between">
+                        <p class="mb-2">Shipping cost:</p>
+                        <p class="mb-2">+ $20.00</p>
+                    </div>
+                    <hr/>
+                    <div class="d-flex justify-content-between">
+                        <p class="mb-2">Total price:</p>
+                        <p class="mb-2 fw-bold">${{total_cost_with_shipping}}</p>
+                    </div>
+
+                    {% comment %} <div class="input-group mt-3 mb-4">
+                        <input class="form-control border" name="" value="Promo code" type="text"/>
+                        <button class="btn btn-light text-primary border">Apply</button>
+                    </div> {% endcomment %}
+
+                    <hr>
+                    <br>
+                    <h5 class="text-dark my-4">Items in cart</h5>
+                    <hr>
+
+                    {% for cart in cart_items %}
+                    <input name="auction_id" type="hidden" value="{{ cart.auction.id }}">
+                    <!-- Quantity (Default value is 1) -->
+                    <input name="quantity" type="hidden" value="1">
+                    <input name="paid_amount" type="hidden" value="{{ total_cost_with_shipping }}">
+
+                    <div class="d-flex justify-content-between">
+                      <div class="d-flex flex-row align-items-center">
+                        <div title="{{ cart.auction.title }}">
+                          <img alt="Shopping item" class="img-fluid rounded-3" src="{{ cart.auction.image.url }}" style="height:40px; width: 50px;" />
+                        </div>
+                        <div style="width: 250px;" title="{{ cart.auction.title }}">
+                          <a href="{% url 'auction-details' cart.auction.slug %}" class="mb-0 ms-lg-4">{{ cart.auction.title|truncatewords:4 }}</a>
+                        </div>
+                      </div>
+                      <div class="d-flex flex-row align-items-center">
+                          <p class="mb-0"><strong>${{ cart.auction.price }}</strong></p>
+                      </div>
+                    </div>
+                    <hr>
+                {% endfor %}
+                    </form>
+                </div>
+            </div>
+    </div>
+</div>
+</section>
+{% endblock %}
